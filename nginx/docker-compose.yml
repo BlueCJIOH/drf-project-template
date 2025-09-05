@@ -3,7 +3,13 @@ services:
     build: .
     ports:
       - "80:80"
-    volumes:
-      - ../:/app
-    depends_on:
-      - web
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - nginx_network
+
+networks:
+  nginx_network:
+    name: "nginx_network"
+    external: true
