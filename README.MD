@@ -28,7 +28,35 @@ make deploy
 
 The application is served through Docker. Common actions are encapsulated in the `Makefile`.
 
-## Celery + Redis
+## Structure
 
-- Services: `redis`, `default-worker`, `default-beat` are defined in `docker-compose.local.yml`.
-- Beat schedules include a health `ping` every minute.
+```text
+project/                # DRF project template
+├─ src/                 # Application source
+│  ├─ core/             # Project core and global config
+│  │  ├─ conf/          # Settings split by domain (api, auth, db, cache, etc.)
+│  │  ├─ fixtures/      # Seed data for `loaddata`
+│  │  └─ ...shared      # Shared modules (models, services, permissions, pagination, validators)
+│  ├─ apps/             # Feature apps live here
+│  │  └─ healthz/       # Example app (health check)
+│  │     └─ api/        # serializers, views
+│  │     └─ urls.py     # urls for the app
+│  └─ manage.py         # Django CLI entrypoint
+├─ nginx/               # Nginx proxy + container setup
+├─ Dockerfile.dev       # Dev container image
+├─ docker-compose.local.yml # Local development docker-compose
+├─ Makefile             # Common dev commands (deploy, up, clean)
+├─ init.sh              # Bootstrap / setup script
+├─ .env.example         # Example environment variables
+├─ .pre-commit-config.yaml # Code quality hooks
+├─ pyproject.toml       # Tooling config (formatters/linters/etc.)
+└─ README.MD            # Project docs and getting started
+```
+
+Notes for new developers
+- New app: create under `src/apps/<your_app>/` with optional `api/` for DRF.
+- URLs: register app URLs in `src/core/urls.py`.
+- Settings: keep domain-specific config in `src/core/conf/` and import via `src/core/settings.py`.
+- Env vars: copy `.env.example` to `.env` and adjust as needed.
+- Dev run: use `Makefile` targets or `docker-compose.local.yml` for local services.
+- Fixtures: place JSON fixtures in `src/core/fixtures/` and load with `manage.py loaddata`.
