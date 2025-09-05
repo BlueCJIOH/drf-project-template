@@ -1,6 +1,8 @@
 # Project Template
 
-This repository provides a Django + DRF template configured to use the [uv](https://github.com/astral-sh/uv) package manager.
+This repository provides a DRF template configured to use the [uv](https://github.com/astral-sh/uv) package manager.
+
+Useful for hackathons and project templates.
 
 ## Environment configuration
 
