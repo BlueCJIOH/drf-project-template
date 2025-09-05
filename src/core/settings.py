@@ -29,6 +29,7 @@ ASGI_APPLICATION = 'core.asgi.application'
 
 STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+TIME_ZONE = env("TIME_ZONE", default="UTC")
 
 TEMPLATES = [
     {

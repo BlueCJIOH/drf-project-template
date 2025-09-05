@@ -27,3 +27,8 @@ make deploy
 ```
 
 The application is served through Docker. Common actions are encapsulated in the `Makefile`.
+
+## Celery + Redis
+
+- Services: `redis`, `default-worker`, `default-beat` are defined in `docker-compose.local.yml`.
+- Beat schedules include a health `ping` every minute.

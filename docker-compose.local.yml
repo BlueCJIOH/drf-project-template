@@ -22,6 +22,57 @@ services:
       - backend_network
     restart: unless-stopped
 
+  redis:
+    image: redis:7-alpine
+    container_name: "${PROJECT_NAME:-your_name}-${ENVIRONMENT:-develop}_redis"
+    volumes:
+      - redis-data:/data
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+    command: [ "redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}" ]
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT}:6379"
+    networks:
+      - backend_network
+
+  default-worker:
+    container_name: "${PROJECT_NAME:-your_name}-${ENVIRONMENT:-develop}_default_worker"
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      target: runtime
+    env_file:
+      - .env
+    tty: true
+    entrypoint: ""
+    command: celery -A core.celery worker -l INFO
+    depends_on:
+      - redis
+      - web
+    networks:
+      - backend_network
+    restart: unless-stopped
+
+  default-beat:
+    container_name: "${PROJECT_NAME:-your_name}-${ENVIRONMENT:-develop}_default_beat"
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      target: runtime
+    env_file:
+      - .env
+    tty: true
+    entrypoint: ""
+    command: celery -A core.celery beat -l INFO --scheduler celery.beat:PersistentScheduler
+    depends_on:
+      - redis
+      - web
+    networks:
+      - backend_network
+    restart: unless-stopped
+
   db:
     image: postgres:16.4-alpine
     container_name: "${PROJECT_NAME:-your_name}-${ENVIRONMENT:-develop}_db"
@@ -52,6 +103,8 @@ volumes:
     name: "${PROJECT_NAME:-your_name}-${ENVIRONMENT:-develop}_staticfiles"
   media-data:
     name: "${PROJECT_NAME:-your_name}-${ENVIRONMENT:-develop}_media"
+  redis-data:
+    name: "${PROJECT_NAME:-your_name}-${ENVIRONMENT:-develop}_redis-data"
 
 networks:
   backend_network:
