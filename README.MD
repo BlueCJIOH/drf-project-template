@@ -17,11 +17,6 @@ Useful for hackathons and project templates.
   2. `pre-commit install`
   3. Optionally run once on all files: `pre-commit run --all-files`
 
-## Gunicorn
-
-- Used to serve the app in dev via Docker/Compose.
-- Command: `gunicorn core.wsgi:application --bind 0.0.0.0:8000 --reload`.
-
 ## Quick start
 
 ```bash
