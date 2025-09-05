@@ -2,8 +2,7 @@ __pycache__/
 .venv/
 .env
 .env.*
-!.env.example
 *.pyc
 .idea/
 *.log
-
+.git
