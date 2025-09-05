@@ -1,6 +1,6 @@
 COMPOSE_FILE=docker-compose.local.yml
 
-.PHONY: build up down migrate loaddata deploy clean
+.PHONY: build up down migrate loaddata collectstatic deploy clean
 
 build:
 	docker compose -f $(COMPOSE_FILE) build
@@ -14,6 +14,9 @@ migrate:
 loaddata:
 	docker compose -f $(COMPOSE_FILE) run --rm web uv run python src/manage.py loaddata $(file)
 
+collectstatic:
+	docker compose -f $(COMPOSE_FILE) run --rm web uv run python src/manage.py collectstatic --noinput
+
 deploy:
 	docker compose -f $(COMPOSE_FILE) up -d --build
 
@@ -22,4 +25,4 @@ down:
 
 clean:
 	docker compose -f $(COMPOSE_FILE) down -v
-	rm -rf __pycache__ .venv
+	rm -rf __pycache__

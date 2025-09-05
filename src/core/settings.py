@@ -10,6 +10,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'drf_spectacular',
     'apps.healthz',
 ]
 
@@ -55,6 +56,7 @@ include(
     "conf/boilerplate.py",
     "conf/environ.py",
     "conf/db.py",
+    "conf/static.py",
     "conf/api.py",
     "conf/cache.py",
     "conf/logger.py",

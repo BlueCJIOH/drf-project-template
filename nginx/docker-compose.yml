@@ -6,10 +6,21 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+    volumes:
+      - static-data:/app/src/core/staticfiles:ro
+      - media-data:/app/src/media:ro
     networks:
       - nginx_network
 
 networks:
   nginx_network:
     name: "nginx_network"
+    external: true
+
+volumes:
+  static-data:
+    name: "${PROJECT_NAME:-your_name}-${ENVIRONMENT:-develop}_staticfiles"
+    external: true
+  media-data:
+    name: "${PROJECT_NAME:-your_name}-${ENVIRONMENT:-develop}_media"
     external: true
