@@ -13,6 +13,7 @@ dependencies = [
     "psycopg2-binary",
     "django-environ",
     "gunicorn",
+    "django-behaviors==0.5.1",
 ]
 
 [tool.uv]
