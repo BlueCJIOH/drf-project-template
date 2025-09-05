@@ -9,3 +9,4 @@ __pycache__/
 
 /src/static/
 /src/media/
+/src/core/staticfiles/

@@ -1,5 +1,3 @@
-from pathlib import Path
-
 from core.conf.boilerplate import BASE_DIR
 
 
