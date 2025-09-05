@@ -1,6 +1,24 @@
-# ODIN Backend Template
+# Project Template
 
 This repository provides a Django + DRF template configured to use the [uv](https://github.com/astral-sh/uv) package manager.
+
+## Environment configuration
+
+- Uses `.env` at repository root, loaded via `django-environ`.
+- Example variables are in `.env.example` (copy to `.env`).
+
+## Pre-commit hooks
+
+- Configured in `.pre-commit-config.yaml` with `black`, `isort`, and `flake8`.
+- Enable locally:
+  1. `pip install pre-commit` (or add via your toolchain)
+  2. `pre-commit install`
+  3. Optionally run once on all files: `pre-commit run --all-files`
+
+## Gunicorn
+
+- Used to serve the app in dev via Docker/Compose.
+- Command: `gunicorn core.wsgi:application --bind 0.0.0.0:8000 --reload`.
 
 ## Quick start
 
@@ -8,7 +26,7 @@ This repository provides a Django + DRF template configured to use the [uv](http
 uv venv .venv
 uv pip install -r requirements.uv.lock
 cp .env.example .env
-make up
+make deploy
 ```
 
 The application is served through Docker. Common actions are encapsulated in the `Makefile`.

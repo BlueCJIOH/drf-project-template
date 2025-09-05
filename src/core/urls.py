@@ -2,5 +2,5 @@ from django.urls import include, path
 
 
 urlpatterns = [
-    path('', include('apps.get_healthz.urls')),
+    path('', include('apps.healthz.urls')),
 ]

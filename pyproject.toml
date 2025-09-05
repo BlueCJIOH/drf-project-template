@@ -10,6 +10,8 @@ dependencies = [
     "celery",
     "django-split-settings",
     "psycopg2-binary",
+    "django-environ",
+    "gunicorn",
 ]
 
 [tool.uv]

@@ -1,6 +1,18 @@
-import os
+import environ
 
-ENVIRONMENT = os.getenv('ENVIRONMENT', 'develop')
-SECRET_KEY = os.getenv('SECRET_KEY', 'insecure-secret-key')
-DEBUG = ENVIRONMENT == 'develop'
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
+from core.conf.boilerplate import BASE_DIR
+
+env = environ.Env(
+    ENVIRONMENT=(str, "develop"),
+    DEBUG=(bool, False),
+)
+
+envpath = BASE_DIR / ".env"
+
+if envpath.exists():
+    env.read_env(envpath)
+
+
+__all__  = [
+    "env",
+]

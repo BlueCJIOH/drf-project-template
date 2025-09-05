@@ -1,12 +1,13 @@
-import os
+from core.conf.environ import env
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('POSTGRES_DB', 'postgres'),
-        'USER': os.getenv('POSTGRES_USER', 'postgres'),
-        'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'postgres'),
-        'HOST': os.getenv('POSTGRES_HOST', 'db'),
-        'PORT': os.getenv('POSTGRES_PORT', '5432'),
+        'NAME': env('POSTGRES_DB', cast=str, default='postgres'),
+        'USER': env('POSTGRES_USER', cast=str, default='postgres'),
+        'PASSWORD': env('POSTGRES_PASSWORD', cast=str, default='postgres'),
+        'HOST': env('POSTGRES_HOST', cast=str, default='db'),
+        "OPTIONS": {"connect_timeout": 1200, "options": "-c statement_timeout=72000"},
+        'PORT': env('POSTGRES_PORT', cast=int, default=5432),
     }
 }

@@ -1,8 +1,9 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.get_healthz.services import get_health_status
-from .serializers import HealthzSerializer
+from apps.healthz.services import get_health_status
+
+from apps.healthz.api.serializers import HealthzSerializer
 
 
 class HealthzView(APIView):

@@ -1,13 +1,56 @@
 services:
+  db:
+    image: postgres:16.4-alpine
+    container_name: "${PROJECT_NAME:-your_name}-${ENVIRONMENT:-develop}_db"
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - POSTGRES_DB=${POSTGRES_DB:-postgres}
+      - POSTGRES_HOST=${POSTGRES_HOST:-db}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend_network
+    restart: unless-stopped
+
   web:
+    container_name: "${PROJECT_NAME:-your_name}-${ENVIRONMENT:-develop}_web"
     build:
       context: .
       dockerfile: Dockerfile.dev
       target: runtime
-    command: uv run python src/manage.py runserver 0.0.0.0:8000
+    command: uv run gunicorn core.wsgi:application --bind 0.0.0.0:8000 --reload
     ports:
-      - "8000:8000"
+      - "127.0.0.1:${WEB_PORT:-8000}:8000"
     volumes:
       - .:/app
     env_file:
       - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - nginx_network
+      - backend_network
+    restart: unless-stopped
+
+volumes:
+  db-data:
+    name: "${PROJECT_NAME:-your_name}-${ENVIRONMENT:-develop}_db-data"
+
+networks:
+  backend_network:
+    name: "${PROJECT_NAME:-your_name}-${ENVIRONMENT:-develop}_backend_network"
+    driver: bridge
+  nginx_network:
+    name: "nginx_network"
+    external: true
