@@ -14,6 +14,7 @@ dependencies = [
     "django-environ",
     "gunicorn",
     "django-behaviors==0.5.1",
+    "redis==6.4.0",
 ]
 
 [tool.uv]

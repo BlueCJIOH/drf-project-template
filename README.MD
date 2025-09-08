@@ -4,6 +4,14 @@ This repository provides a DRF template configured to use the [uv](https://githu
 
 Useful for hackathons and project templates.
 
+## How to add a new library
+
+  - `uv add redis` — example for adding `redis` package
+
+- How to recover `uv.lock` и `requirements.uv.lock`:
+  1. Make lock file: `uv lock`
+  2. Export dependencies to `requirements.uv.lock`: `uv export --format=requirements-txt -o requirements.uv.lock`
+
 ## Environment configuration
 
 - Uses `.env` at repository root, loaded via `django-environ`.
