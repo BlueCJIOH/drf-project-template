@@ -1,6 +1,12 @@
 services:
   web:
     container_name: "${PROJECT_NAME:-your_name}-${ENVIRONMENT:-develop}_web"
+    user: "${UID:-1000}:${GID:-1000}"
+    environment:
+      - UID=${UID:-1000}
+      - HOME=/app
+      - XDG_CACHE_HOME=/app/.cache
+      - UV_CACHE_DIR=/app/.cache/uv
     build:
       context: .
       dockerfile: Dockerfile.dev

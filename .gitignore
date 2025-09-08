@@ -10,3 +10,5 @@ __pycache__/
 /src/static/
 /src/media/
 /src/core/staticfiles/
+/.cache/
+/.bash_history
