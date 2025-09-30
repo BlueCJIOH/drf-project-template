@@ -4,8 +4,6 @@ This repository provides a DRF template configured to use the [uv](https://githu
 
 Useful for hackathons and project templates.
 
-
-
 ## How to add a new library
 
   - `uv add redis` — example for adding `redis` package
