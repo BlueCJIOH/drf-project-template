@@ -1,15 +1,29 @@
 FROM python:3.12-slim AS builder
+
+ARG TARGETPLATFORM
+ARG BUILDPLATFORM
+
 RUN pip install --no-cache-dir uv
 WORKDIR /app
 COPY requirements.uv.lock ./
-RUN uv pip install --system --requirement requirements.uv.lock
+RUN uv pip install --system --requirement requirements.uv.lock --link-mode=copy
 
 FROM python:3.12-slim AS runtime
+
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+RUN useradd -m -u 1000 appuser
+
 WORKDIR /app
 ENV PYTHONPATH=/app/src
-COPY --from=builder /usr/local /usr/local
-COPY . .
-# To run as non-root, uncomment the following line
-# USER 1000
 
-CMD ["uv", "run", "gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8000", "--reload"]
+COPY --from=builder /usr/local /usr/local
+COPY --chown=appuser:appuser . .
+
+RUN mkdir -p /app/celery && chown -R appuser:appuser /app/celery
+
+# non-root user
+USER appuser
+
+EXPOSE 8080
+
+CMD ["uv", "run", "gunicorn", "core.wsgi:application", "--bind", "0.0.0.0:8080", "--reload"]

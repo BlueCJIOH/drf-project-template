@@ -4,6 +4,8 @@ This repository provides a DRF template configured to use the [uv](https://githu
 
 Useful for hackathons and project templates.
 
+
+
 ## How to add a new library
 
   - `uv add redis` — example for adding `redis` package
@@ -25,11 +27,20 @@ Useful for hackathons and project templates.
   2. `pre-commit install`
   3. Optionally run once on all files: `pre-commit run --all-files`
 
+## Common Problems
+
+```bash
+warning: Failed to hardlink files; falling back to full copy. This may lead to degraded performance. 
+If the cache and target directories are on different filesystems, hardlinking may not be supported.
+If this is intentional, set export UV_LINK_MODE=copy or use --link-mode=copy to suppress this warning.
+```
+
+- Add `UV_LINK_MODE=copy` to Dockerfile.dev after `FROM python:3.12-slim AS builder`
+- ENV UV_LINK_MODE=copy 
+
 ## Quick start
 
 ```bash
-uv venv .venv
-uv pip install -r requirements.uv.lock
 cp .env.example .env
 make deploy
 ```
@@ -46,6 +57,7 @@ project/                # DRF project template
 │  │  ├─ fixtures/      # Seed data for `loaddata`
 │  │  └─ ...shared      # Shared modules (models, services, permissions, pagination, validators)
 │  ├─ apps/             # Feature apps live here
+│  │  ├─ a12n/          # Authentication endpoints and SimpleJWT integration
 │  │  └─ healthz/       # Example app (health check)
 │  │     └─ api/        # serializers, views
 │  │     └─ urls.py     # urls for the app

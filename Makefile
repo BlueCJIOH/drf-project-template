@@ -1,24 +1,34 @@
-COMPOSE_FILE=docker-compose.local.yml
+COMPOSE_FILE=docker-compose.yml
 
-.PHONY: build up down migrate loaddata collectstatic deploy clean
+NO_CACHE ?= 0
+
+ifneq ($(filter -nc,$(MAKECMDGOALS)),)
+override NO_CACHE := 1
+endif
+
+BUILD_FLAGS :=
+ifeq ($(NO_CACHE),1)
+BUILD_FLAGS := --no-cache
+endif
+
+.PHONY: build up down migrate loaddata collectstatic deploy clean -nc
 
 build:
-	docker compose -f $(COMPOSE_FILE) build
+	docker compose -f $(COMPOSE_FILE) build $(BUILD_FLAGS)
 
 up:
-	docker compose -f $(COMPOSE_FILE) up
+	docker compose -f $(COMPOSE_FILE)  up -d
 
 migrate:
-	docker compose -f $(COMPOSE_FILE) run --rm web uv run python src/manage.py migrate
+	docker compose -f $(COMPOSE_FILE) run --remove-orphans --rm web uv run python src/manage.py migrate
 
 loaddata:
-	docker compose -f $(COMPOSE_FILE) run --rm web uv run python src/manage.py loaddata $(file)
+	docker compose -f $(COMPOSE_FILE) run --remove-orphans --rm web uv run python src/manage.py loaddata src/core/fixtures/*
 
 collectstatic:
-	docker compose -f $(COMPOSE_FILE) run --rm web uv run python src/manage.py collectstatic --noinput
+	docker compose -f $(COMPOSE_FILE) run --remove-orphans --rm web uv run python src/manage.py collectstatic --noinput
 
-deploy:
-	docker compose -f $(COMPOSE_FILE) up -d --build
+deploy: build migrate collectstatic up loaddata
 
 down:
 	docker compose -f $(COMPOSE_FILE) down
@@ -26,3 +36,7 @@ down:
 clean:
 	docker compose -f $(COMPOSE_FILE) down -v
 	rm -rf __pycache__
+
+# consume optional '-nc' goal passed after '--' so make does not error
+-nc:
+	@:
