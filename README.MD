@@ -39,8 +39,25 @@ If this is intentional, set export UV_LINK_MODE=copy or use --link-mode=copy to 
 ## Quick start
 
 ```bash
+# via ssh
+git clone git@github.com:ostrovok-hackathon-2025/venue.git
+# or via https for read-only:
+# git clone https://github.com/ostrovok-hackathon-2025/venue.git
+cd venue
 cp .env.example .env
+
+# one-shot deploy if GNU Make is installed
 make deploy
+```
+It can be deployed by manually as well
+```bash
+docker compose up --build -d
+docker compose -f docker-compose.yml exec web uv run python src/manage.py collectstatic --noinput
+docker compose -f docker-compose.yml exec uv run python src/manage.py migrate
+docker compose -f docker-compose.yml exec web sh -lc "uv run python src/manage.py loaddata src/core/fixtures/*"
+
+# create superuser
+docker compose -f docker-compose.yml exec web uv run python src/manage.py createsuperuser
 ```
 
 The application is served through Docker. Common actions are encapsulated in the `Makefile`.
