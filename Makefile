@@ -6,12 +6,6 @@ ifneq ($(filter -nc,$(MAKECMDGOALS)),)
 override NO_CACHE := 1
 endif
 
-ifeq ($(OS),Windows_NT)
-  MKDIR = if not exist "$(1)" mkdir "$(1)"
-else
-  MKDIR = mkdir -p $(1)1
-endif
-
 BUILD_FLAGS :=
 ifeq ($(NO_CACHE),1)
 BUILD_FLAGS := --no-cache
@@ -21,6 +15,12 @@ endif
 
 build:
 	docker compose -f $(COMPOSE_FILE) build $(BUILD_FLAGS)
+
+ifeq ($(OS),Windows_NT)
+  MKDIR = if not exist "$(1)" mkdir "$(1)"
+else
+  MKDIR = mkdir -p $(1)
+endif
 
 checkdirs:
 	@echo "=================[Ensuring 'staticfiles' and 'media' directories exist locally...]================="
@@ -41,7 +41,7 @@ loaddata:
 collectstatic:
 	docker compose -f $(COMPOSE_FILE) run --remove-orphans --rm web uv run python src/manage.py collectstatic --noinput
 
-deploy: checkdirs build collectstatic migrate up loaddata
+deploy: build collectstatic migrate up loaddata
 
 down:
 	docker compose -f $(COMPOSE_FILE) down
