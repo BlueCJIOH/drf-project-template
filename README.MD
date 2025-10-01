@@ -49,7 +49,7 @@ cp .env.example .env
 # one-shot deploy if GNU Make is installed
 make deploy
 ```
-It can be deployed by manually as well
+It can be deployed manually as well
 ```bash
 docker compose up --build -d
 docker compose -f docker-compose.yml exec web uv run python src/manage.py collectstatic --noinput
